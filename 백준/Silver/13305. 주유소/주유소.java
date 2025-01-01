@@ -3,32 +3,27 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static int answer = 0;
-    static int oil[];
-    static int money[];
+    static long answer = 0L;
+    static long oil[];
+    static long money[];
+    static long MIN = Integer.MAX_VALUE;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
-        oil = new int[N - 1];
-        money = new int[N];
+        oil = new long[N - 1];
+        money = new long[N];
         StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N - 1; i++) {
-            oil[i] = Integer.parseInt(st.nextToken());
+            oil[i] = Long.parseLong(st.nextToken());
         }
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            money[i] = Integer.parseInt(st.nextToken());
+            money[i] = Long.parseLong(st.nextToken());
         }
-        answer += oil[0] * money[0]; //처음꺼는 더함
-        for (int i = 1; i < N - 1; i++) {
-            int a = oil[i] * money[i - 1];
-            int b = oil[i] * money[i];
-            if (a > b) {
-                answer += b;
-            } else {
-                answer += a;
-            }
+        for (int i = 0; i < N - 1; i++) {
+            MIN = Math.min(MIN, money[i]);
+            answer += MIN * oil[i];
         }
         System.out.println(answer);
     }
