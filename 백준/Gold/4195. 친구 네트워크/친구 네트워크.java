@@ -35,12 +35,7 @@ public class Main{
     }
 
     private static String find(String x) {
-        if (x.equals(map.get(x))) {
-            return x;
-        }
-        String root = find(map.get(x));
-        map.put(x, root); //경로압축
-        return root;
+       return map.computeIfPresent(x, (key, parent) -> parent.equals(key) ? key : find(parent));
     }
 
     private static void union(String a, String b) {
