@@ -1,42 +1,41 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+
 public class Main {
-    static boolean board[][];
-    static int N;
-    static int [] dr = new int[] {-1,-1,-1}; 
-    static int [] dc = new int[] {-1,0,1};
-    static int count;
-     
-    public static void main(String[] args) throws NumberFormatException, IOException {
+    static int N, count = 0;
+    static int[] dx = {-1, -1, -1};
+    static int[] dy = {-1, 0, 1};
+    static boolean[][] visited;
+
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            N =Integer.parseInt(br.readLine());
-            board = new boolean[N][N];
-            count = 0;
-            recursive(0);
+        N = Integer.parseInt(br.readLine());
+        visited = new boolean[N][N];
+        backtracking(0);
         System.out.println(count);
     }
-    
-    private static void recursive(int depth) {
-        if(depth == N) {
+
+    private static void backtracking(int depth) {
+        if (depth == N) {
             count++;
             return;
         }
-        for(int i=0; i<N;i++) {
-            if(canPlace(depth,i)) {
-                board[depth][i] = true;
-                recursive(depth+1); //다음으로
-                board[depth][i] = false;
+        for (int i = 0; i < N; i++) {
+            if (canPlace(depth, i)) {
+                visited[depth][i] = true;
+                backtracking(depth + 1);
+                visited[depth][i] = false;
             }
         }
     }
-    
+
     private static boolean canPlace(int r, int c) {
-        for(int i=1; i<= r;i++) {
-            for(int j=0; j<3; j++) {
-                int nr = r+dr[j]*i;
-                int nc = c+dc[j]*i;
-                if(nc<N && nc>=0 && board[nr][nc]) {
+        //만약 Depth(r)이 3이면 그 위에 i-1,(i=1) i-2까지만 보면됨 따라서 i=1부터 r보다 작을때까지
+        for (int i = 1; i <= r; i++) {
+            for (int j = 0; j < 3; j++) {
+                int nr = r + dx[j] * i;
+                int nc = c + dy[j] * i;
+                if (nc < N && nc >= 0 && visited[nr][nc]) {
                     return false;
                 }
             }
