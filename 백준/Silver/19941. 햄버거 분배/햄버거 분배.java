@@ -27,10 +27,11 @@ public class Main {
                 peoples.add(i + 1);
             }
         }
-        for (int peopleIdx : peoples) {
-            for (int j = Math.max(1, peopleIdx - K); j <= Math.min(N, peopleIdx + K); j++) {
-                if (hamburgers[j]) {
-                    hamburgers[j] = false;
+        for (int i = peoples.size() - 1; i >= 0; i--) {
+            int peopleIdx = peoples.get(i);
+            for (int k = peopleIdx + K; k >= peopleIdx - K; k--) {
+                if (k>= 1 && k <= N && hamburgers[k]) {
+                    hamburgers[k] = false;
                     cnt++;
                     break;
                 }
