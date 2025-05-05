@@ -1,63 +1,71 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.StringTokenizer;
 
 public class Main {
     static int N, M = 0;
-    static int[][] map;
-    static int[][] dist;
+    static boolean[][] visited;
+    static int[][] wallArr;
+    static int[][] broken;
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        M = Integer.parseInt(st.nextToken()); //가로
-        N = Integer.parseInt(st.nextToken()); //세로
 
-        map = new int[N][M];
-        dist = new int[N][M];
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < N; i++) {
-            Arrays.fill(dist[i], Integer.MAX_VALUE); // 최댓값으로 초기화
-            char[] carray = br.readLine().toCharArray();
-            for (int j = 0; j < M; j++) {
-                map[i][j] = carray[j] - '0';
+        visited = new boolean[M + 1][N + 1];
+        wallArr = new int[M + 1][N + 1];
+        broken = new int[M + 1][N + 1];
+
+        for (int i = 1; i <= M; i++) {
+            char[] carr = br.readLine().toCharArray();
+            for (int j = 1; j <= N; j++) {
+                wallArr[i][j] = carr[j - 1] - '0';
+                broken[i][j] = (int) 1e9;
             }
         }
-        Deque<int[]> pq = new ArrayDeque<>();
-        pq.add(new int[]{0, 0});
-        dist[0][0] = 0;
-        while (!pq.isEmpty()) {
-            int[] cur = pq.pollFirst();
+        broken[1][1] = 0;
+
+        Deque<int[]> dq = new ArrayDeque<>();
+        dq.add(new int[]{1, 1});
+        while (!dq.isEmpty()) {
+            int[] cur = dq.pollFirst();
             int x = cur[0];
             int y = cur[1];
-            if (x == N - 1 && y == M - 1) {
-                break;
+
+            visited[x][y] = true;
+
+            if (x == M && y == N) {
+                System.out.println(broken[x][y]);
+                return;
             }
+
             for (int i = 0; i < 4; i++) {
-                int cx = x + dx[i];
-                int cy = y + dy[i];
-                if (isValid(cx, cy)) {
-                    int newDist = dist[x][y] + map[cx][cy];
-                    if (newDist < dist[cx][cy]) {
-                        dist[cx][cy] = newDist;
-                        if (map[cx][cy] == 0) {
-                            pq.addFirst(new int[]{cx, cy});
-                        } else {
-                            pq.addLast(new int[]{cx, cy});
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (isValid(nx, ny) && !visited[nx][ny]) {
+                    int newWall = wallArr[x][y] + broken[x][y];
+                    if (newWall < broken[nx][ny]) {
+                        broken[nx][ny] = newWall;
+                        if (wallArr[nx][ny] == 1) {
+                            dq.addLast(new int[]{nx, ny});
+                        } else if (wallArr[nx][ny] == 0) {
+                            dq.addFirst(new int[]{nx, ny});
                         }
                     }
                 }
             }
         }
-        System.out.println(dist[N - 1][M - 1]);
     }
 
     private static boolean isValid(int x, int y) {
-        return x >= 0 && y >= 0 && x < N && y < M;
+        return y >= 1 && y <= N && x >= 1 && x <= M;
     }
 }
