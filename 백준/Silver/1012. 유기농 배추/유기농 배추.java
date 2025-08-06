@@ -37,36 +37,36 @@ public class Main {
                 X = Integer.parseInt(st.nextToken());
                 Y = Integer.parseInt(st.nextToken());
                 arr[X][Y] = true;
-                dq.add(new int[]{X, Y});
             }
-            Deque<int[]> near;
-            while (!dq.isEmpty()) {
-                int[] ar = dq.poll();
-                int x = ar[0];
-                int y = ar[1];
-                if (visited[x][y]) {
-                    continue;
-                }
-                count++;
-                near = new ArrayDeque<>();
-                near.add(new int[]{x, y});
-                while (!near.isEmpty()) {
-                    int[] nn = near.poll();
-                    int nnx = nn[0];
-                    int nny = nn[1];
-                    for (int i = 0; i < 4; i++) {
-                        int nx = nnx + dx[i];
-                        int ny = nny + dy[i];
-                        if (isValid(nx, ny) && !visited[nx][ny] && arr[nx][ny]) {
-                            visited[nx][ny] = true;
-                            near.add(new int[]{nx, ny});
-                        }
+            for (int i = 0; i < M; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (arr[i][j]) {
+                        dfs(i, j);
                     }
                 }
             }
             sb.append(count).append("\n");
         }
         System.out.println(sb);
+    }
+
+    private static void dfs(int x, int y) {
+        dq.add(new int[]{x, y});
+        count++;
+        while (!dq.isEmpty()) {
+            int[] ar = dq.poll();
+            int cx = ar[0];
+            int cy = ar[1];
+            arr[cx][cy] = false;
+            for (int i = 0; i < 4; i++) {
+                int nx = cx + dx[i];
+                int ny = cy + dy[i];
+                if (isValid(nx, ny) && arr[nx][ny]) {
+                    arr[nx][ny] = false;
+                    dq.add(new int[]{nx, ny});
+                }
+            }
+        }
     }
 
     private static boolean isValid(int x, int y) {
