@@ -9,7 +9,6 @@ public class Main {
     static int N, M = 0;
     static int MAX = Integer.MIN_VALUE;
     static int[] arr;
-    static boolean[] visited;
     static StringBuilder sb = new StringBuilder();
 
 
@@ -23,25 +22,23 @@ public class Main {
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
-        visited = new boolean[N];
-        backtrack(0, 0, 0);
-        System.out.println(MAX);
-    }
-
-    static private void backtrack(int depth, int idx, int sum) {
-        if (depth == 3 && sum <= M) {
-            MAX = Math.max(MAX, sum);
-            return;
-        }
-        if (sum > M) {
-            return;
-        }
-        for (int i = idx; i < N; i++) {
-            if (!visited[i]) {
-                visited[i] = true;
-                backtrack(depth + 1, idx + 1, sum + arr[i]);
-                visited[i] = false;
+        int sum = 0;
+        for (int i = 0; i < N; i++) {
+            sum = 0;
+            sum += arr[i];
+            for (int j = i + 1; j < N; j++) {
+                sum += arr[j];
+                for (int x = j + 1; x < N; x++) {
+                    sum += arr[x];
+                    if (sum <= M) {
+                        MAX = Math.max(sum, MAX);
+                    }
+                    sum -= arr[x];
+                }
+                sum -= arr[j];
             }
+            sum -= arr[i];
         }
+        System.out.println(MAX);
     }
 }
